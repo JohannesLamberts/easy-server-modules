@@ -1,13 +1,17 @@
 {
-  "name": "props-cms.server",
+  "name": "easy-server-modules",
   "version": "0.1.0",
   "description": "Server for props-cms",
-  "repository": "https://github.com/JohannesLamberts/react-cms/tree/master/server",
+  "repository": "https://github.com/JohannesLamberts/easy-server-modules",
   "keywords": [
-    "cms",
-    "react",
-    "jam",
-    "node"
+    "node",
+    "server",
+    "websocket",
+    "socket.io",
+    "mongodb",
+    "logger",
+    "winston",
+    "nodemailer"
   ],
   "main": "build/index.js",
   "types": "build/index.d.ts",
@@ -24,13 +28,10 @@
     "compression": "^1.7.1",
     "cookie-parser": "^1.4.3",
     "express": "^4.16.2",
-    "moment": "^2.19.3",
     "mongodb": "^3.0.2",
     "morgan": "^1.9.0",
     "multer": "^1.3.0",
     "nodemailer": "^4.4.2",
-    "props-cms.connector-common": "^0.1.1",
-    "rxjs": "^5.5.6",
     "socket.io": "^2.0.4",
     "throttle-debounce": "^1.0.1",
     "winston": "^2.4.0"
