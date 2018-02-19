@@ -19,7 +19,7 @@ export interface LoggerTranspotMailCfg {
         host: string;
         port: number;
         secure: boolean;
-    }
+    };
 }
 
 export interface LoggerStream {
@@ -27,19 +27,19 @@ export interface LoggerStream {
 }
 
 export interface LoggerCfg {
-    rootLogger?: Logger,
+    rootLogger?: Logger;
     console: {
-        level: LogLevel
-    },
+        level: LogLevel;
+    };
     file?: {
         path: string;
-        levels: LogLevel[]
-    },
+        levels: LogLevel[];
+    };
     filter?: {
-        mode: 'include' | 'exclude'
-        ids: Array<number | { threshold: LogLevel; id: number; }>
-    }
-    mail?: LoggerTranspotMailCfg
+        mode: 'include' | 'exclude';
+        ids: Array<number | { threshold: LogLevel; id: number; }>;
+    };
+    mail?: LoggerTranspotMailCfg;
 }
 
 export interface Logger {
@@ -51,6 +51,6 @@ export interface Logger {
     debug: (message: string, meta?: Object, id?: number) => void;
     silly: (message: string, meta?: Object, id?: number) => void;
     log: (level: LogLevel, message: string, meta?: Object, id?: number) => void;
-    stream: (level: LogLevel) => LoggerStream
-    spawn: (name: string, id: number) => Logger
+    stream: (level: LogLevel) => LoggerStream;
+    spawn: (name: string, id: number) => Logger;
 }

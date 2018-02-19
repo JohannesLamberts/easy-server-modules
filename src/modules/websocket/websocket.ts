@@ -8,7 +8,7 @@ import { WebsocketConnection } from './connection';
 
 export interface WebsocketCfg {
     port: number;
-    ctor: new (socket: SocketIO.Socket) => WebsocketConnection
+    ctor: new (socket: SocketIO.Socket) => WebsocketConnection;
 }
 
 export class Websocket extends FactoryElement<WebsocketCfg> {

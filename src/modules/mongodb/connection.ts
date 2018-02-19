@@ -15,7 +15,7 @@ export interface MongoDbConnectionCfg {
         database?: string;
         user: string;
         password: string;
-    }
+    };
     options?: MongoClientOptions;
 }
 

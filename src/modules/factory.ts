@@ -14,7 +14,7 @@ export abstract class FactoryElement<TCfg extends Object> {
         this.init();
     }
 
-    abstract init(): void
+    abstract init(): void;
 }
 
 export type FactoryElementCTOR<TCfg extends Object, TElement extends FactoryElement<{}>>

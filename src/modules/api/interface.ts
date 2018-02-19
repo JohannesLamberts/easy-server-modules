@@ -16,5 +16,5 @@ export abstract class ApiSegment {
         this._logger = this._env.logger.spawn(`ApiSegment ${this._baseID}`, ELoggerPackageIds.eApi);
     }
 
-    public abstract registerOn(app: Router, prevPath?: string): void
+    public abstract registerOn(app: Router, prevPath?: string): void;
 }

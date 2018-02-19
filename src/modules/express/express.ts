@@ -23,8 +23,7 @@ export interface ExpressCfg {
             format: string | morgan.FormatFn;
             logLevel: LogLevel
         }
-    }
-
+    };
 }
 
 const defaultSetup: ExpressCfg['setup'] = {

@@ -68,8 +68,7 @@ export class ApiRoute<TRouteParams> {
                                    handler(req, res);
                                } catch (e) {
                                    this._logger.warn(
-                                       `Error on ${method.toUpperCase()} `
-                                       + `${prevPath}${this._path}`, e);
+                                       `Error on ${method.toUpperCase()} ${prevPath}${this._path}`, e);
                                    throw e;
                                }
                            });
