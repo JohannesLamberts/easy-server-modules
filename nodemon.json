@@ -1,0 +1,7 @@
+{
+  "watch": [
+    "build/**/*.js",
+    "build/*.js"
+  ],
+  "exec": "npm run start"
+}
