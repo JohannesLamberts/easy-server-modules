@@ -8,7 +8,7 @@ import { WebsocketConnection } from './connection';
 
 export interface WebsocketCfg {
     port: number;
-    ctor: new (socket: SocketIO.Socket) => WebsocketConnection;
+    connection: new (socket: SocketIO.Socket) => WebsocketConnection;
 }
 
 export class Websocket extends FactoryElement<WebsocketCfg> {
@@ -28,7 +28,7 @@ export class Websocket extends FactoryElement<WebsocketCfg> {
         this._logger.info(`listening on ${adr.address}:${adr.port}`);
 
         this._io.on('connection', (socket: SocketIO.Socket) => {
-            const connection = new this._cfg.ctor(socket);
+            const connection = new this._cfg.connection(socket);
             this._connections.push(connection);
             this._logger.debug(`+ on  ${socket.id} (${this._connections.length} connections)`);
             socket.on('disconnect', () => {

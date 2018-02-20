@@ -1,18 +1,29 @@
-import { Router }     from 'express';
-import { ApiRoute }   from './apiRoute';
-import { ApiSegment } from './interface';
+import {
+    Application,
+    Router
+}                            from 'express';
+import { ServerEnvironment } from '../../serverEnvironment';
+import { Logger }            from '../logger/_interface';
+import { ELoggerPackageIds } from '../logger/ids';
+import { ApiRoute }          from './apiRoute';
 
-export class ApiSegmentDefault extends ApiSegment {
+export class ApiSegment {
 
     private _routes: string[];
     private _apiRoutes: ApiRoute<any>[];
     private _subSegments: ApiSegment[];
-
     private _frozen = false;
+
+    get baseID() {
+        return this._baseID;
+    }
+
+    constructor(protected _baseID: string) {
+    }
 
     public addRoute<TRouteParams = {}>(route: string): ApiRoute<TRouteParams> {
         this._checkRegister(route);
-        const newRoute = new ApiRoute<TRouteParams>(route, this._env);
+        const newRoute = new ApiRoute<TRouteParams>(route);
         this._apiRoutes.push(newRoute);
         return newRoute;
     }
@@ -26,7 +37,13 @@ export class ApiSegmentDefault extends ApiSegment {
         this._frozen = true;
     }
 
-    public registerOn(target: Router, prevPath: string = ''): void {
+    public registerOn(parentLogger: Logger, target: Application) {
+        return this._registerOn(target, '', parentLogger.spawn('API', ELoggerPackageIds.eApi));
+    }
+
+    private _registerOn(target: Router,
+                        prevPath: string,
+                        logger: Logger): void {
 
         this.freeze();
 
@@ -34,11 +51,15 @@ export class ApiSegmentDefault extends ApiSegment {
               nextPath = prevPath + '/' + this.baseID;
 
         for (const segment of this._subSegments) {
-            segment.registerOn(router, nextPath);
+            segment._registerOn(router,
+                                nextPath,
+                                logger.spawn(segment.baseID, ELoggerPackageIds.eApi));
         }
 
         for (const route of this._apiRoutes) {
-            route.registerOn(router, nextPath);
+            route.registerOn(router,
+                             nextPath,
+                             logger.spawn(route.path, ELoggerPackageIds.eApi));
         }
 
         target.use(
@@ -53,10 +74,10 @@ export class ApiSegmentDefault extends ApiSegment {
 
     private _checkRegister(route: string) {
         if (this._frozen) {
-            throw this._logger.error(`API is frozen`);
+            throw new Error(`API is frozen`);
         }
         if (this._routes.indexOf(route) !== -1) {
-            throw this._logger.error(`Route exists: ${route}`);
+            throw new Error(`Route exists: ${route}`);
         }
         this._routes.push(route);
     }

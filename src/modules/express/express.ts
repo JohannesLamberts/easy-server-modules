@@ -71,7 +71,7 @@ export class Express extends FactoryElement<ExpressCfg> {
             this._cfg.init(this._app);
         } else {
             for (const apiSegment of this._cfg.init) {
-                apiSegment.registerOn(this._app);
+                apiSegment.registerOn(this._logger, this._app);
             }
         }
 

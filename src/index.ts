@@ -1,3 +1,4 @@
-export *                     from './serverEnvironment';
-export { ApiSegment }        from './modules/api/interface';
-export { ApiSegmentDefault } from './modules/api/apiSegment';
+export { EHttpState }          from './modules/express/httpState';
+export { WebsocketConnection } from './modules/websocket/connection';
+export *                       from './serverEnvironment';
+export { ApiSegment }          from './modules/api/apiSegment';

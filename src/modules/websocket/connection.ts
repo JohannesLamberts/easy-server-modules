@@ -1,6 +1,10 @@
 export abstract class WebsocketConnection {
-    constructor(private _socket: SocketIO.Socket) {
+
+    constructor(protected _socket: SocketIO.Socket) {
+        this.init();
     }
+
+    abstract init(): void;
 
     public destroy() {
         return;

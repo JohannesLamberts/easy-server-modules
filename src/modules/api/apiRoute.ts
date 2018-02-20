@@ -2,10 +2,8 @@ import {
     Request,
     Response,
     Router
-}                            from 'express';
-import { ServerEnvironment } from '../../serverEnvironment';
-import { Logger }            from '../logger/_interface';
-import { ELoggerPackageIds } from '../logger/ids';
+}                 from 'express';
+import { Logger } from '../logger/_interface';
 
 export type ApiCallback<TBodyParams, TRouteParams, TSearchParams>
     = (req: Request & {
@@ -19,12 +17,14 @@ type ApiMethod = 'get' | 'post' | 'put' | 'delete' | 'patch';
 
 export class ApiRoute<TRouteParams> {
 
-    private _logger: Logger;
     private _requestHandler: Partial<Record<ApiMethod, ApiCallback<any, any, any>>> = {};
     private _frozen = false;
 
-    constructor(private _path: string, env: ServerEnvironment) {
-        this._logger = env.logger.spawn(`ApiRoute`, ELoggerPackageIds.eApi);
+    get path(): string {
+        return this._path;
+    }
+
+    constructor(private _path: string) {
     }
 
     get<TSearchParams = {}>
@@ -51,14 +51,16 @@ export class ApiRoute<TRouteParams> {
         return this;
     }
 
-    public registerOn(target: Router, prevPath: string): void {
+    public registerOn(target: Router,
+                      prevPath: string,
+                      logger: Logger): void {
 
         const routeMethods = Object.keys(this._requestHandler) as ApiMethod[];
 
         const methodString = routeMethods.map(method => method.toUpperCase())
                                          .join(' | ');
 
-        this._logger.info(`Register: ${prevPath}${this._path} ( ${methodString} )`);
+        logger.info(`Register: ${prevPath}${this._path} ( ${methodString} )`);
 
         for (const method of routeMethods) {
             const handler = this._requestHandler[method]!;
@@ -67,8 +69,7 @@ export class ApiRoute<TRouteParams> {
                                try {
                                    handler(req, res);
                                } catch (e) {
-                                   this._logger.warn(
-                                       `Error on ${method.toUpperCase()} ${prevPath}${this._path}`, e);
+                                   logger.warn(`Error on ${method.toUpperCase()} ${prevPath}${this._path}`, e);
                                    throw e;
                                }
                            });
@@ -77,10 +78,10 @@ export class ApiRoute<TRouteParams> {
 
     private _setMethod(method: ApiMethod, fn: ApiCallback<any, any, any>) {
         if (this._requestHandler[method]) {
-            throw this._logger.error(`Method already registered: ${method}`);
+            throw new Error(`Method already registered: ${method}`);
         }
         if (this._frozen) {
-            throw this._logger.error(`already frozen`);
+            throw new Error(`already frozen`);
         }
         this._requestHandler[method] = fn;
     }
