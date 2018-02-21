@@ -10,8 +10,6 @@ export abstract class FactoryElement<TCfg extends Object> {
     constructor(protected _cfg: TCfg,
                 readonly _id: number,
                 protected _logger: Logger) {
-
-        this.init();
     }
 
     abstract init(): void;
@@ -41,6 +39,7 @@ export class Factory<TCfg extends Object = {}, TElement extends FactoryElement<{
         const element = new this._ctor(cfg,
                                        id,
                                        this._logger.spawn(this._ident + `[${id}]`, this._logID));
+        element.init();
         this._elements.push(element);
         return element;
     }

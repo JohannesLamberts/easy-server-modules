@@ -1,12 +1,11 @@
-import { exec }                   from 'child_process';
+import { exec }           from 'child_process';
 import {
+    Db,
     MongoClient,
     MongoClientOptions
-}                                 from 'mongodb';
-import * as path                  from 'path';
-import { FactoryElement }         from '../factory';
-import { ELoggerPackageIds }      from '../logger/ids';
-import { MongoDbDatabaseWrapper } from './database';
+}                         from 'mongodb';
+import * as path          from 'path';
+import { FactoryElement } from '../factory';
 
 export interface MongoDbConnectionCfg {
     port?: number;
@@ -24,18 +23,17 @@ export class MongoDbConnection extends FactoryElement<MongoDbConnectionCfg> {
     private _connectString = 'mongodb://';
     private _client: MongoClient;
 
-    private _dbCache: Record<string, MongoDbDatabaseWrapper>;
-
     init() {
         const { auth, host, port } = this._cfg;
         if (auth) {
             this._connectString += auth.user + ':' + auth.password;
         }
-        this._connectString += (host || 'localhost') + ':' + (port || 27017);
+        const location = (host || 'localhost') + ':' + (port || 27017);
+        this._connectString += location;
         if (auth && auth.database) {
             this._connectString += '/' + auth.database;
         }
-        this._logger.extendName(` @${host}:${port}`);
+        this._logger.extendName(` @${location}`);
     }
 
     connect() {
@@ -45,17 +43,11 @@ export class MongoDbConnection extends FactoryElement<MongoDbConnectionCfg> {
             .then(mongo => {
                 this._logger.info('Connected');
                 this._client = mongo;
-                // this._db = mongo.db(this._dbName);
             });
     }
 
-    database(name: string): MongoDbDatabaseWrapper {
-        if (!this._dbCache[name]) {
-            this._dbCache[name] = new MongoDbDatabaseWrapper(this._client.db(name),
-                                                             this._logger.spawn(name,
-                                                                                ELoggerPackageIds.eMongoDbDatabase));
-        }
-        return this._dbCache[name];
+    database(name: string): Db {
+        return this._client.db(name);
     }
 
     databaseDump(name: string, toPath: string): Promise<string> {

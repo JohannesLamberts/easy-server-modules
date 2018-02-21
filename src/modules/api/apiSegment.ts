@@ -2,16 +2,15 @@ import {
     Application,
     Router
 }                            from 'express';
-import { ServerEnvironment } from '../../serverEnvironment';
 import { Logger }            from '../logger/_interface';
 import { ELoggerPackageIds } from '../logger/ids';
 import { ApiRoute }          from './apiRoute';
 
 export class ApiSegment {
 
-    private _routes: string[];
-    private _apiRoutes: ApiRoute<any>[];
-    private _subSegments: ApiSegment[];
+    private _routes: string[] = [];
+    private _apiRoutes: ApiRoute<any>[] = [];
+    private _subSegments: ApiSegment[] = [];
     private _frozen = false;
 
     get baseID() {

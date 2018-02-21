@@ -36,22 +36,10 @@ const defaultCfg: ServerCfg = {
 export class ServerEnvironment {
 
     private _cfg: ServerCfg;
-    private _factories = {
-        expressApp:
-            new Factory('Express',
-                        Express,
-                        ELoggerPackageIds.eExpress,
-                        this),
-        mongoDb:
-            new Factory('MongoDb',
-                        MongoDbConnection,
-                        ELoggerPackageIds.eMongoDb,
-                        this),
-        websocket:
-            new Factory('Websocket',
-                        Websocket,
-                        ELoggerPackageIds.eWebsocket,
-                        this)
+    private _factories: {
+        expressApp: Factory<ExpressCfg, Express>,
+        mongoDb: Factory<MongoDbConnectionCfg, MongoDbConnection>,
+        websocket: Factory<WebsocketCfg, Websocket>
     };
 
     private _logger: Logger;
@@ -70,13 +58,31 @@ export class ServerEnvironment {
                                                                             new LoggerTarget(this._cfg.logger));
 
         this._logger = rootLogger.spawn(this._cfg.ident, ELoggerPackageIds.eServerEnvironment);
+
+        this._factories = {
+            expressApp:
+                new Factory('Express',
+                            Express,
+                            ELoggerPackageIds.eExpress,
+                            this),
+            mongoDb:
+                new Factory('MongoDb',
+                            MongoDbConnection,
+                            ELoggerPackageIds.eMongoDb,
+                            this),
+            websocket:
+                new Factory('Websocket',
+                            Websocket,
+                            ELoggerPackageIds.eWebsocket,
+                            this)
+        };
     }
 
     createExpress(cfg: ExpressCfg): Express {
         return this._factories.expressApp.create(cfg);
     }
 
-    createMongoDb(cfg: MongoDbConnectionCfg): MongoDbConnection {
+    createMongoDb(cfg: MongoDbConnectionCfg = {}): MongoDbConnection {
         return this._factories.mongoDb.create(cfg);
     }
 
