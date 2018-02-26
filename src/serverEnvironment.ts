@@ -82,7 +82,7 @@ export class ServerEnvironment {
         return this._factories.expressApp.create(cfg);
     }
 
-    createMongoDb(cfg: MongoDbConnectionCfg = {}): MongoDbConnection {
+    connectMongoDb(cfg: MongoDbConnectionCfg = {}): MongoDbConnection {
         return this._factories.mongoDb.create(cfg);
     }
 

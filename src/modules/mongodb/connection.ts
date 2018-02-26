@@ -46,7 +46,7 @@ export class MongoDbConnection extends FactoryElement<MongoDbConnectionCfg> {
             });
     }
 
-    database(name: string): Db {
+    db(name: string): Db {
         return this._client.db(name);
     }
 
