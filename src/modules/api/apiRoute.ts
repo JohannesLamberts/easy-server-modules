@@ -39,6 +39,12 @@ export class ApiRoute<TRouteParams> {
         return this;
     }
 
+    put<TBodyParams = {}, TSearchParams = {}>
+    (fn: ApiCallback<TBodyParams, TRouteParams, TSearchParams>): this {
+        this._setMethod('put', fn);
+        return this;
+    }
+
     delete<TBodyParams = {}, TSearchParams = {}>
     (fn: ApiCallback<TBodyParams, TRouteParams, TSearchParams>): this {
         this._setMethod('delete', fn);
