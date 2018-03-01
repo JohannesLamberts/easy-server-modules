@@ -1,4 +1,5 @@
 import {
+    NextFunction,
     Request,
     Response,
     Router
@@ -11,13 +12,14 @@ export type ApiCallback<TBodyParams, TRouteParams, TSearchParams>
            params: TRouteParams,
            query: TSearchParams
        },
-       res: Response) => void;
+       res: Response,
+       next: NextFunction) => void;
 
 type ApiMethod = 'get' | 'post' | 'put' | 'delete' | 'patch';
 
 export class ApiRoute<TRouteParams> {
 
-    private _requestHandler: Partial<Record<ApiMethod, ApiCallback<any, any, any>>> = {};
+    private _requestHandler: Partial<Record<ApiMethod, ApiCallback<any, any, any>[]>> = {};
     private _frozen = false;
 
     get path(): string {
@@ -28,32 +30,32 @@ export class ApiRoute<TRouteParams> {
     }
 
     get<TSearchParams = {}>
-    (fn: ApiCallback<{}, TRouteParams, TSearchParams>): this {
-        this._setMethod('get', fn);
+    (...fn: ApiCallback<{}, TRouteParams, TSearchParams>[]): this {
+        this._setMethod('get', ...fn);
         return this;
     }
 
     post<TBodyParams = {}, TSearchParams = {}>
-    (fn: ApiCallback<TBodyParams, TRouteParams, TSearchParams>): this {
-        this._setMethod('post', fn);
+    (...fn: ApiCallback<TBodyParams, TRouteParams, TSearchParams>[]): this {
+        this._setMethod('post', ...fn);
         return this;
     }
 
     put<TBodyParams = {}, TSearchParams = {}>
-    (fn: ApiCallback<TBodyParams, TRouteParams, TSearchParams>): this {
-        this._setMethod('put', fn);
+    (...fn: ApiCallback<TBodyParams, TRouteParams, TSearchParams>[]): this {
+        this._setMethod('put', ...fn);
         return this;
     }
 
     delete<TBodyParams = {}, TSearchParams = {}>
-    (fn: ApiCallback<TBodyParams, TRouteParams, TSearchParams>): this {
-        this._setMethod('delete', fn);
+    (...fn: ApiCallback<TBodyParams, TRouteParams, TSearchParams>[]): this {
+        this._setMethod('delete', ...fn);
         return this;
     }
 
     patch<TBodyParams = {}, TSearchParams = {}>
-    (fn: ApiCallback<TBodyParams, TRouteParams, TSearchParams>): this {
-        this._setMethod('patch', fn);
+    (...fn: ApiCallback<TBodyParams, TRouteParams, TSearchParams>[]): this {
+        this._setMethod('patch', ...fn);
         return this;
     }
 
@@ -69,20 +71,24 @@ export class ApiRoute<TRouteParams> {
         logger.info(`Register: ${prevPath}${this._path} ( ${methodString} )`);
 
         for (const method of routeMethods) {
-            const handler = this._requestHandler[method]!;
-            target[method](this._path,
-                           (req, res) => {
-                               try {
-                                   handler(req, res);
-                               } catch (e) {
-                                   logger.warn(`Error on ${method.toUpperCase()} ${prevPath}${this._path}`, e);
-                                   throw e;
-                               }
-                           });
+            target[method](
+                this._path,
+                ...this._requestHandler[method]!
+                    .map((handler: ApiCallback<any, any, any>) =>
+                             (req: Request, res: Response, next: NextFunction) => {
+                                 try {
+                                     handler(req, res, next);
+                                 } catch (e) {
+                                     logger.warn(`Error on ${method.toUpperCase()} ${prevPath}${this._path}`,
+                                                 e);
+                                     throw e;
+                                 }
+                             }
+                    ));
         }
     }
 
-    private _setMethod(method: ApiMethod, fn: ApiCallback<any, any, any>) {
+    private _setMethod(method: ApiMethod, ...fn: ApiCallback<any, any, any>[]) {
         if (this._requestHandler[method]) {
             throw new Error(`Method already registered: ${method}`);
         }
