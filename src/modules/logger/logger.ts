@@ -53,8 +53,8 @@ export class LoggerDefault implements Logger {
         };
     }
 
-    spawn(name: string, id: number): LoggerDefault {
+    spawn(name: string, id?: number): LoggerDefault {
         const nextName = this._name ? this._name + '/' + name : name;
-        return new LoggerDefault(nextName, id, this._target);
+        return new LoggerDefault(nextName, id || 0, this._target);
     }
 }

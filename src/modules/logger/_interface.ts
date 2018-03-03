@@ -52,5 +52,5 @@ export interface Logger {
     silly: (message: string, meta?: Object, id?: number) => void;
     log: (level: LogLevel, message: string, meta?: Object, id?: number) => void;
     stream: (level: LogLevel) => LoggerStream;
-    spawn: (name: string, id: number) => Logger;
+    spawn: (name: string, id?: number) => Logger;
 }
