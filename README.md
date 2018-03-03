@@ -1,8 +1,6 @@
 <h1 align="center">server-modules</h1>
 
-<div align="center">
-[![CircleCI](https://img.shields.io/circleci/project/github/JohannesLamberts/server-modules/master.svg)](https://circleci.com/gh/JohannesLamberts/server-modules)
-</div>
+[![CircleCI](https://img.shields.io/circleci/project/github/JohannesLamberts/server-modules/master.svg)](https://circleci.com/gh/JohannesLamberts/server-modules/tree/master)
 
 # Features
 This packages provides some easy-to-use utilities to setup a server with node.js.
