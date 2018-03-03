@@ -17,6 +17,9 @@
   "types": "build/index.d.ts",
   "author": "Johannes Lamberts <info@j-lamberts.de> (http://j-lamberts.de)",
   "license": "MIT",
+  "files": [
+    "build/**"
+  ],
   "scripts": {
     "start": "node build/index.js",
     "start.w": "nodemon",
