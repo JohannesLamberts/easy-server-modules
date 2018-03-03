@@ -1,7 +1,7 @@
 <h1 align="center">server-modules</h1>
 
 <div align="center">
-[![CircleCI](https://img.shields.io/circleci/project/github/JohannesLamberts/easy-server-modules/master.svg)](https://circleci.com/gh/JohannesLamberts/easy-server-modules)
+[![CircleCI](https://img.shields.io/circleci/project/github/JohannesLamberts/server-modules/master.svg)](https://circleci.com/gh/JohannesLamberts/server-modules)
 </div>
 
 # Features
