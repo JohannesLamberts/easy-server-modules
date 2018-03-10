@@ -1,12 +1,13 @@
 import {
     ChangeStream,
-    Collection
+    Collection,
+    ObjectID
 }                                 from 'mongodb';
 import { WebsocketConnectorBase } from './connection';
 
 export const websocketConnectorMongoDbWatch = (props: {
     getCollection: (collectionName: string) => Collection
-}) => {
+}): WebsocketConnectorBase => {
 
     const { getCollection } = props;
 
@@ -20,7 +21,12 @@ export const websocketConnectorMongoDbWatch = (props: {
             this.on('db.subscribe', (collections: string[]) => {
                 for (const collectionName of collections) {
                     if (!this._subscriptions[collectionName]) {
-                        const cb = (update) => {
+                        const cb = (update: {
+                            operationType: string;
+                            documentKey: {
+                                _id: ObjectID
+                            }
+                        }) => {
                             this.emit('db.next', {
                                 collection: collectionName,
                                 operationType: update.operationType,
@@ -57,5 +63,5 @@ export const websocketConnectorMongoDbWatch = (props: {
                 }
             }
         }
-    };
+    } as any;
 };
