@@ -1,21 +1,30 @@
 import {
     createServer,
     Server as HttpServer
-}                              from 'http';
-import { listen }              from 'socket.io';
-import { FactoryElement }      from '../factory';
-import { WebsocketConnection } from './connection';
+}                         from 'http';
+import { listen }         from 'socket.io';
+import { FactoryElement } from '../factory';
+import {
+    WebsocketConnectorBase,
+    WebsocketConnectorCTOR
+}                         from './connection';
 
 export interface WebsocketCfg {
     port: number;
-    connection: new (socket: SocketIO.Socket) => WebsocketConnection;
+    connection: WebsocketConnectorCTOR | WebsocketConnectorCTOR[];
+}
+
+function makeArray<T>(val: T | T[]): T[] {
+    return Array.isArray(val)
+        ? val
+        : [val];
 }
 
 export class Websocket extends FactoryElement<WebsocketCfg> {
 
     private _httpServer: HttpServer;
     private _io: SocketIO.Server;
-    private _connections: WebsocketConnection[] = [];
+    private _connections: WebsocketConnectorBase[] = [];
 
     init() {
         this._httpServer = createServer();
@@ -28,13 +37,13 @@ export class Websocket extends FactoryElement<WebsocketCfg> {
         this._logger.info(`listening on ${adr.address}:${adr.port}`);
 
         this._io.on('connection', (socket: SocketIO.Socket) => {
-            const connection = new this._cfg.connection(socket);
-            this._connections.push(connection);
+            const connectionArr = makeArray(this._cfg.connection).map(ctor => new ctor(socket));
+            this._connections.push(...connectionArr);
             this._logger.debug(`+ on  ${socket.id} (${this._connections.length} connections)`);
             socket.on('disconnect', () => {
-                connection.destroy();
+                connectionArr.forEach(connection => connection.destroy());
                 this._connections = this._connections
-                                        .filter(connectionEl => connectionEl !== connection);
+                                        .filter(connectionEl => connectionArr.indexOf(connectionEl) === -1);
                 this._logger.debug(`- off ${socket.id} (${this._connections.length} connections)`);
             });
         });

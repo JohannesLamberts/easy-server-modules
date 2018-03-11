@@ -1,6 +1,6 @@
-export abstract class WebsocketConnection {
+export abstract class WebsocketConnectorBase {
 
-    constructor(protected _socket: SocketIO.Socket) {
+    constructor(private _socket: SocketIO.Socket) {
         this.init();
     }
 
@@ -9,4 +9,15 @@ export abstract class WebsocketConnection {
     public destroy() {
         return;
     }
+
+    protected on(event: string | symbol, listener: (...args: any[]) => void): this {
+        this._socket.on(event, listener);
+        return this;
+    }
+
+    protected emit(event: string | symbol, ...args: any[]): boolean {
+        return this._socket.emit(event, ...args);
+    }
 }
+
+export type WebsocketConnectorCTOR = new (socket: SocketIO.Socket) => WebsocketConnectorBase;
