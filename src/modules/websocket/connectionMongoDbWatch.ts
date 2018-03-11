@@ -2,12 +2,15 @@ import {
     ChangeStream,
     Collection,
     ObjectID
-}                                 from 'mongodb';
-import { WebsocketConnectorBase } from './connection';
+} from 'mongodb';
+import {
+    WebsocketConnectorBase,
+    WebsocketConnectorCTOR
+} from './connection';
 
 export const websocketConnectorMongoDbWatch = (props: {
     getCollection: (collectionName: string) => Collection
-}): WebsocketConnectorBase => {
+}): WebsocketConnectorCTOR => {
 
     const { getCollection } = props;
 
@@ -63,5 +66,5 @@ export const websocketConnectorMongoDbWatch = (props: {
                 }
             }
         }
-    } as any;
+    };
 };
