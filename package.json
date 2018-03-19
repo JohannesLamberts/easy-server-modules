@@ -1,6 +1,6 @@
 {
   "name": "server-modules",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Easy configurable server modules (logging, express, api, websocket, mongodb)",
   "repository": "https://github.com/JohannesLamberts/easy-server-modules",
   "keywords": [
@@ -41,7 +41,7 @@
   },
   "devDependencies": {
     "@types/body-parser": "^1.16.8",
-    "@types/compression": "0.0.35",
+    "@types/compression": "^0.0.36",
     "@types/cookie-parser": "^1.4.1",
     "@types/express": "^4.11.1",
     "@types/mongodb": "^3.0.5",
