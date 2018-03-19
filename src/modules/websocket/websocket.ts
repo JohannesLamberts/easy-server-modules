@@ -2,12 +2,12 @@ import {
     createServer,
     Server as HttpServer
 }                         from 'http';
-import { listen }         from 'socket.io';
 import { FactoryElement } from '../factory';
 import {
     WebsocketConnectorBase,
     WebsocketConnectorCTOR
 }                         from './connection';
+import * as SocketIO from 'socket.io';
 
 export interface WebsocketCfg {
     port: number;
@@ -30,7 +30,7 @@ export class Websocket extends FactoryElement<WebsocketCfg> {
         this._httpServer = createServer();
         this._httpServer.listen(this._cfg.port);
 
-        this._io = listen(this._httpServer);
+        this._io = SocketIO.listen(this._httpServer);
 
         const adr = this._httpServer.address();
 

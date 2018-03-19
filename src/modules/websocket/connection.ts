@@ -1,3 +1,5 @@
+import * as SocketIO from 'socket.io';
+
 export abstract class WebsocketConnectorBase {
 
     constructor(private _socket: SocketIO.Socket) {
